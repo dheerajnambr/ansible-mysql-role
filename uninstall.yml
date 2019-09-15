@@ -1,0 +1,33 @@
+--- # Playbook to install Oracle MySQL 5.7 using Repository
+
+- hosts: all
+  user: ansible
+  become: yes
+  become_method: sudo
+  gather_facts: true
+  
+  tasks:
+    - service:
+        name: mysqld
+        state: stopped
+
+    - name: Remove Packages
+      shell: sudo yum -y remove mysql* 
+    
+    - name: Remove data directory
+      file:
+        path: /var/lib/mysql/
+        state: absent
+
+    - name: Remove conig file
+      file:
+        path: /etc/my.cnf
+        state: absent
+
+    - name: Remove log file
+      file:
+        path: /var/log/mysqld.log
+        state: absent
+
+
+

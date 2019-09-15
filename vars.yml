@@ -1,0 +1,9 @@
+---
+# Default values for mysql role
+mysql_root_password: "AlphaTextmatteR09876#"
+mysql_root_username: "root"
+mysql_port:          "3306"
+mysql_user_name:     "ansibleuser"
+mysql_user_password: "AnsibleuserPass09876#"
+mysql_user_database: "ansibledb"
+mysql_user_db_priv:  "ansibledb.*:ALL"

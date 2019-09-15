@@ -1,0 +1,14 @@
+--- # Playbook to install Oracle MySQL 5.7 using Repository 
+ 
+- hosts: all
+  user: ansible
+  become: yes
+  become_method: sudo
+  gather_facts: true
+ 
+  tasks:
+      - name:  Install MySQL 5.7 Yum repository
+        yum:
+          name: https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm
+          state: present
+ 

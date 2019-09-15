@@ -1,0 +1,26 @@
+---
+
+   
+  - name: Create a MySQL user database
+    mysql_db:
+      name: '{{ mysql_user_database }}'
+      state: present
+      login_user: '{{ mysql_root_username }}'
+      login_password: '{{ mysql_root_password }}'
+    become: true
+
+  - name: Create a new MySQL user
+    mysql_user:
+      name: '{{ mysql_user_name }}'
+      password: '{{ mysql_user_password }}'
+      priv: '{{ mysql_user_db_priv }}'
+      host: '%'
+      state: present
+      login_user: '{{ mysql_root_username }}'
+      login_password: '{{ mysql_root_password }}'
+    become: true
+
+
+  - name: Reload privilege tables 
+    shell: |
+       mysql -u'{{ mysql_root_username }}' -p'{{ mysql_root_password }}' --connect-expired-password -e " flush privileges; "

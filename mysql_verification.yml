@@ -1,0 +1,48 @@
+---
+- hosts: all
+  user: ansible
+  become: yes
+  become_method: sudo
+  gather_facts: true
+  vars_files:
+    - vars.yml
+
+
+  tasks:
+
+  - name: Service State Information
+    service_facts:
+  
+  - debug:
+      var: ansible_facts.services['mysqld.service']
+
+  - name: MySQL Instance Details  
+    shell: |
+       mysql -u'{{ mysql_root_username }}' -p'{{ mysql_root_password }}' --connect-expired-password -e "status; "
+    register: mysql_status
+    changed_when: false        
+  
+  - debug:
+      msg: "{{ mysql_status.stdout }}"
+      verbosity: 1
+
+  - name: MySQL Database list
+    shell: |
+       mysql -u'{{ mysql_root_username }}' -p'{{ mysql_root_password }}' --connect-expired-password -e " show databases ;"
+    register: database_status
+    changed_when: false
+
+  - debug:
+      msg: "{{ database_status.stdout_lines }}"
+      verbosity: 1
+
+  - name: MySQL User list
+    shell: |
+       mysql -u'{{ mysql_root_username }}' -p'{{ mysql_root_password }}' --connect-expired-password -e " select user,host from mysql.user; show grants for ansibleuser ;"
+    register: database_user_status
+    changed_when: false
+
+  - debug:
+      msg: "{{ database_user_status.stdout }}"
+      verbosity: 1
+

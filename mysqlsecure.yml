@@ -1,0 +1,41 @@
+---
+
+  - name: Get default root password
+    shell: |
+      awk '$0 ~ "temporary password" {print $11}' /var/log/mysqld.log
+    register: password_from_logs
+    changed_when: false
+
+  - debug:
+      msg: "mysql root@localhost password from logs is: {{ password_from_logs.stdout }} "
+      verbosity: 1
+
+  - name: change password
+    shell: |
+       mysql -uroot -p'{{ password_from_logs.stdout }}' --connect-expired-password  -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mysql_root_password }}';  flush privileges; "
+    register: password_reset
+    changed_when: false
+
+  - debug:
+      msg: "{{ password_reset }}"
+      verbosity: 1
+
+  - name: Remove Anonymous MySQL users
+    mysql_user:
+      name: ''
+      host_all: true
+      state: absent
+      login_user: '{{ mysql_root_username }}'
+      login_password: '{{ mysql_root_password }}'
+   
+  - name: Remove MySQL test database
+    mysql_db:
+      name: test
+      state: absent
+      login_user: '{{ mysql_root_username }}'
+      login_password: '{{ mysql_root_password }}'
+    become: true
+
+  - name: Reload privilege tables 
+    shell: |
+       mysql -u'{{ mysql_root_username }}' -p'{{ mysql_root_password }}' --connect-expired-password -e " flush privileges; "

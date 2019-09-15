@@ -1,0 +1,33 @@
+--- # Playbook to Configure MySQL server settings 
+
+- hosts: all
+  user: ansible
+  become: yes
+  become_method: sudo
+  gather_facts: true
+  vars_files:
+    - vars.yml
+
+ 
+  tasks:
+    - name: Configure MySQL Server Settings 
+      include_tasks: configfilesetting.yml
+      
+    - name: Start MySQL 5.7 Instance 
+      service:
+        name: mysqld
+        state: started
+        enabled: yes
+    
+    - name: Wait for MySQL service to be ready
+      wait_for:
+        port: '{{ mysql_port }}'
+        connect_timeout: 3
+        delay: 3
+        timeout: 30
+    
+    - name: Run mysql_secure_install Script 
+      include_tasks: mysqlsecure.yml
+
+    - name: Create databases and users
+      include_tasks: databases_and_users.yml

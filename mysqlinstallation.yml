@@ -1,0 +1,23 @@
+--- # Playbook to Configure MySQL server settings
+
+- hosts: all
+  user: ansible
+  become: yes
+  become_method: sudo
+  gather_facts: true
+
+- name: MySQL repositoring setting version 5.7
+  import_playbook: setuprepo.yml
+
+- name: Install MySQL 5.7 Binary files
+  import_playbook: installbinary.yml
+
+- name: Start Service, configure database paramaters and mysql security
+  import_playbook: configure.yml
+
+- name: Verify MySQL Service status and verify Installation
+  import_playbook: mysql_verification.yml
+
+
+
+

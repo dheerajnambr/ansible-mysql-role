@@ -1,0 +1,44 @@
+--- # Enable MySQL paramaters in /etc/my.cnf files
+
+    - name: Innodb buffer pool settings
+      lineinfile:
+        path: /etc/my.cnf
+        state: present
+        insertafter: EOF
+        line: 'innodb_buffer_pool_size =  250M'
+
+    - name: Innodb log file size settings
+      lineinfile:
+        path: /etc/my.cnf
+        state: present
+        insertafter: EOF
+        line: 'innodb_log_file_size    =  128M'
+
+    - name: Increase max connections
+      lineinfile:
+        path: /etc/my.cnf
+        state: present
+        insertafter: EOF
+        line: 'max_connections = 300'
+
+    - name: Enabling slow query log setting
+      lineinfile:
+        path: /etc/my.cnf
+        state: present
+        insertafter: EOF
+        line: 'slow_query_log = 1'
+
+    - name: Enabling long query time parameter
+      lineinfile:
+        path: /etc/my.cnf
+        state: present
+        insertafter: EOF
+        line: 'long_query_time = 2'
+
+    - name: Enabling skip name resolve parameter
+      lineinfile:
+        path: /etc/my.cnf
+        state: present
+        insertafter: EOF
+        line: 'skip_name_resolve'
+

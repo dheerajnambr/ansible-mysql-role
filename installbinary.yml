@@ -1,0 +1,23 @@
+--- # Playbook to install MySQL Server Packages 
+
+- hosts: all
+  user: ansible
+  become: yes
+  become_method: sudo
+  gather_facts: true
+
+  tasks:
+    - name: Disable mysql 8.0 repository if available
+      command: yum-config-manager --disable mysql80-community
+
+    - name: Enable mysql 5.7 repository 
+      command: yum-config-manager --enable mysql57-community
+      
+    - name: Install MySQL server and dependency packages  
+      yum:
+        name: ['mysql-community-server', 'mysql-community-client','MySQL-python']
+      register: installed_packages
+
+    - debug:
+        msg: "{{ installed_packages }}"
+        verbosity: 1
